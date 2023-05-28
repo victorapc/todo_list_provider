@@ -15,7 +15,7 @@ class SqliteConnectionFactory {
 
   factory SqliteConnectionFactory() {
     if (_instance == null) {
-      _instance == SqliteConnectionFactory._();
+      _instance = SqliteConnectionFactory._();
     }
 
     return _instance!;
