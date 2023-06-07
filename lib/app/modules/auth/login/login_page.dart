@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:todo_list_provider/app/core/widget/todo_list_logo.dart';
 import 'package:todo_list_provider/app/modules/auth/login/login_controller.dart';
 
+import '../../../core/widget/todo_list_field.dart';
+
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -34,11 +36,16 @@ class LoginPage extends StatelessWidget {
                     child: Form(
                       child: Column(
                         children: [
-                          TextFormField(),
+                          TodoListField(
+                            label: "E-Mail",
+                          ),
                           const SizedBox(
                             height: 20,
                           ),
-                          TextFormField(),
+                          TodoListField(
+                            label: "Senha",
+                            obscureText: true,
+                          ),
                           const SizedBox(
                             height: 10,
                           ),
@@ -86,7 +93,7 @@ class LoginPage extends StatelessWidget {
                           const SizedBox(
                             height: 30,
                           ),
-                          /*SignInButton(
+                          SignInButton(
                             Buttons.Google,
                             text: 'Continue com o Google',
                             padding: const EdgeInsets.all(5),
@@ -95,7 +102,7 @@ class LoginPage extends StatelessWidget {
                               borderSide: BorderSide.none,
                             ),
                             onPressed: () {},
-                          ),*/
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
