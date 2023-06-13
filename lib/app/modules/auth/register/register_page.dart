@@ -1,10 +1,54 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_list_provider/app/core/ui/theme_extensions.dart';
 import 'package:todo_list_provider/app/core/widget/todo_list_field.dart';
 import 'package:todo_list_provider/app/core/widget/todo_list_logo.dart';
+import 'package:todo_list_provider/app/modules/auth/register/register_controller.dart';
+import 'package:validatorless/validatorless.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final _formKey = GlobalKey<FormState>();
+  final _emailEC = TextEditingController();
+  final _passwordEC = TextEditingController();
+  final _confirmaPasswordEC = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailEC.dispose();
+    _passwordEC.dispose();
+    _confirmaPasswordEC.dispose();
+    //context.read<RegisterController>().removeListener(() {});
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<RegisterController>().addListener(() {
+      final controller = context.read<RegisterController>();
+
+      var success = controller.success;
+      var error = controller.error;
+
+      if (success) {
+        Navigator.of(context).pop();
+      } else if (error != null && error.isNotEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,22 +96,44 @@ class RegisterPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
             child: Form(
+              key: _formKey,
               child: Column(
                 children: [
-                  const TodoListField(label: 'E-Mail'),
+                  TodoListField(
+                    label: 'E-Mail',
+                    controller: _emailEC,
+                    validator: Validatorless.multiple([
+                      Validatorless.required('E-Mail obrigatório.'),
+                      Validatorless.email('E-Mail inválido.'),
+                    ]),
+                  ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const TodoListField(
+                  TodoListField(
                     label: 'Senha',
+                    controller: _passwordEC,
                     obscureText: true,
+                    validator: Validatorless.multiple([
+                      Validatorless.required('Senha obrigatória.'),
+                      Validatorless.min(
+                          6, 'Senha deve ter pelo menos 6 caracteres.'),
+                    ]),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  const TodoListField(
+                  TodoListField(
                     label: 'Confirma Senha',
+                    controller: _confirmaPasswordEC,
                     obscureText: true,
+                    validator: Validatorless.multiple([
+                      Validatorless.required('Senha obrigatória.'),
+                      Validatorless.min(6,
+                          'Confirma Senha deve ter pelo menos 6 caracteres.'),
+                      Validatorless.compare(
+                          _passwordEC, 'Senha diferente de confirmar senha.'),
+                    ]),
                   ),
                   const SizedBox(
                     height: 20,
@@ -75,7 +141,19 @@ class RegisterPage extends StatelessWidget {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        final formValid =
+                            _formKey.currentState?.validate() ?? false;
+
+                        if (formValid) {
+                          final email = _emailEC.text;
+                          final password = _passwordEC.text;
+
+                          context
+                              .read<RegisterController>()
+                              .registerUser(email, password);
+                        }
+                      },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
