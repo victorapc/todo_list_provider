@@ -36,8 +36,6 @@ class LoginController extends DefaultChangeNotifier {
 
   Future<void> googleLogin() async {
     try {
-      await _userService
-          .googleLogout(); //Forçando logout do google. Caso necessário comentar essa linha.
       showLoadingAndResetState();
       infoMessage = null;
       notifyListeners();
@@ -46,11 +44,11 @@ class LoginController extends DefaultChangeNotifier {
       if (user != null) {
         success();
       } else {
-        _userService.googleLogout();
+        _userService.logout();
         setError('Erro ao realizar login com o google.');
       }
     } on AuthException catch (e) {
-      _userService.googleLogout();
+      _userService.logout();
       setError(e.message);
     } finally {
       hideLoading();
