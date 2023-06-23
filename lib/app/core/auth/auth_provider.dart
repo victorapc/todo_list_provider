@@ -7,13 +7,13 @@ class AuthProvider extends ChangeNotifier {
   final FirebaseAuth _firebaseAuth;
   final UserService _userService;
 
-  AuthProvider(
-      {required FirebaseAuth firebaseAuth, required UserService userService})
-      : _firebaseAuth = firebaseAuth,
+  AuthProvider({
+    required FirebaseAuth firebaseAuth,
+    required UserService userService,
+  })  : _firebaseAuth = firebaseAuth,
         _userService = userService;
 
   Future<void> logout() => _userService.logout();
-
   User? get user => _firebaseAuth.currentUser;
 
   void loadListener() {
