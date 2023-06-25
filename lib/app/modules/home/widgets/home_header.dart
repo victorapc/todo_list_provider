@@ -11,7 +11,7 @@ class HomeHeader extends StatelessWidget {
     return Row(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 15),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           child: Selector<AuthProvider, String>(
             selector: (context, authProvider) =>
                 authProvider.user?.displayName ?? 'Não',

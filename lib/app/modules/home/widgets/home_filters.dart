@@ -20,7 +20,7 @@ class _HomeFiltersState extends State<HomeFilters> {
           style: context.tittleStyle,
         ),
         const SizedBox(
-          height: 10,
+          height: 5,
         ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
