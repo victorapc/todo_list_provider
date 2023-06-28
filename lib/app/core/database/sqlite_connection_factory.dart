@@ -14,7 +14,9 @@ class SqliteConnectionFactory {
   SqliteConnectionFactory._();
 
   factory SqliteConnectionFactory() {
-    _instance ??= SqliteConnectionFactory._();
+    if (_instance == null) {
+      _instance = SqliteConnectionFactory._();
+    }
 
     return _instance!;
   }
@@ -23,13 +25,15 @@ class SqliteConnectionFactory {
     var databasePath = await getDatabasesPath();
     var databasePathFinal = join(databasePath, _DATABASE_NAME);
     if (_db == null) {
-      _lock.synchronized(() async {
-        _db ??= await openDatabase(databasePathFinal,
-            version: _VERSION,
-            onConfigure: _onConfigure,
-            onCreate: _onCreate,
-            onUpgrade: _onUpgrade,
-            onDowngrade: _onDowngrade);
+      await _lock.synchronized(() async {
+        if (_db == null) {
+          _db = await openDatabase(databasePathFinal,
+              version: _VERSION,
+              onConfigure: _onConfigure,
+              onCreate: _onCreate,
+              onUpgrade: _onUpgrade,
+              onDowngrade: _onDowngrade);
+        }
       });
     }
 
