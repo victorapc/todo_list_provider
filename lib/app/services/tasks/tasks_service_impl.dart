@@ -50,4 +50,10 @@ class TasksServiceImpl extends TasksService {
   @override
   Future<void> checkOrUncheckTask(TaskModel task) =>
       _tasksRepository.checkOrUncheckTask(task);
+
+  @override
+  Future<void> removeById(int id) => _tasksRepository.removeById(id);
+
+  @override
+  Future<void> removeAllTasks() => _tasksRepository.removeAllTasks();
 }

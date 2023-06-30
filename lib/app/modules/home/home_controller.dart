@@ -120,4 +120,13 @@ class HomeController extends DefaultChangeNotifier {
     showFinishingTasks = !showFinishingTasks;
     refreshPage();
   }
+
+  Future<void> removeById(int id) async {
+    showLoadingAndResetState();
+
+    await _tasksService.removeById(id);
+
+    hideLoading();
+    refreshPage();
+  }
 }

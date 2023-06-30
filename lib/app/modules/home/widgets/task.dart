@@ -3,12 +3,70 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list_provider/app/models/task_model.dart';
 import 'package:todo_list_provider/app/modules/home/home_controller.dart';
+import 'package:todo_list_provider/app/services/tasks/tasks_service.dart';
 
-class Task extends StatelessWidget {
+class Task extends StatefulWidget {
   final TaskModel model;
-  final dateFormat = DateFormat('dd/MM/y');
 
   Task({super.key, required this.model});
+
+  @override
+  State<Task> createState() => _TaskState();
+}
+
+class _TaskState extends State<Task> {
+  final dateFormat = DateFormat('dd/MM/y');
+
+  void _removeTask(BuildContext context, {required TaskModel task}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          title: const Text(
+            'Excluir tarefa',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: Text(
+            'Deseja excluir a tarefa (${task.description})?',
+            style: const TextStyle(
+              fontSize: 16,
+              height: 1.2,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await context.read<HomeController>().removeById(task.id);
+
+                if (!mounted) return;
+
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'SIM',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'NÃO',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,25 +83,35 @@ class Task extends StatelessWidget {
         child: ListTile(
           contentPadding: const EdgeInsets.all(8),
           leading: Checkbox(
-            value: model.finished,
+            value: widget.model.finished,
             onChanged: (value) =>
-                context.read<HomeController>().chechOrUncheckTask(model),
+                context.read<HomeController>().chechOrUncheckTask(widget.model),
           ),
           title: Text(
-            model.description,
+            widget.model.description,
             style: TextStyle(
-              decoration: model.finished ? TextDecoration.lineThrough : null,
+              decoration:
+                  widget.model.finished ? TextDecoration.lineThrough : null,
             ),
           ),
           subtitle: Text(
-            dateFormat.format(model.dateTime),
+            dateFormat.format(widget.model.dateTime),
             style: TextStyle(
-              decoration: model.finished ? TextDecoration.lineThrough : null,
+              decoration:
+                  widget.model.finished ? TextDecoration.lineThrough : null,
             ),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
             side: const BorderSide(width: 1),
+          ),
+          trailing: IconButton(
+            onPressed: () => _removeTask(context, task: widget.model),
+            icon: const Icon(
+              Icons.delete_forever,
+              color: Colors.red,
+              size: 28,
+            ),
           ),
         ),
       ),
