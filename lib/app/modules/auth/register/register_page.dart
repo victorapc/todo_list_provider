@@ -38,7 +38,9 @@ class _RegisterPageState extends State<RegisterPage> {
       context: context,
       successCallBack: (notifier, listenerInstance) {
         listenerInstance.dispose();
-        Navigator.of(context).pop();
+        // Foi removido devido a alteração do auth_provider.dart devido a
+        // alteração de _firebaseAuth.idTokenChanges() para _firebaseAuth.authStateChanges().
+        //Navigator.of(context).pop();
       },
       errorCallBack: (notifier, listenerInstance) {},
     );
