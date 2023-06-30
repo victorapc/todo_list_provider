@@ -105,11 +105,11 @@ class _HomePageState extends State<HomePage> {
                 child: IntrinsicHeight(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      HomeHeader(),
-                      HomeFilters(),
-                      HomeWeekFilter(),
-                      HomeTasks(),
+                    children: const [
+                      HomeHeader(), // Widget header contendo o nome do usuário.
+                      HomeFilters(), // Widget onde fica os cards Hoje, Amanha e Semana.
+                      HomeWeekFilter(), // Widget resposável em filtrar os dias referente a semana apenas.
+                      HomeTasks(), // Widget responsável em exibir as tasks cadastradas.
                     ],
                   ),
                 ),
