@@ -5,12 +5,75 @@ import 'package:provider/provider.dart';
 import 'package:todo_list_provider/app/core/auth/auth_provider.dart';
 import 'package:todo_list_provider/app/core/ui/messages.dart';
 import 'package:todo_list_provider/app/core/ui/theme_extensions.dart';
+import 'package:todo_list_provider/app/modules/home/home_controller.dart';
 import 'package:todo_list_provider/app/services/user/user_service.dart';
 
-class HomeDrawer extends StatelessWidget {
-  final nameVN = ValueNotifier<String>('');
-
+class HomeDrawer extends StatefulWidget {
   HomeDrawer({super.key});
+
+  @override
+  State<HomeDrawer> createState() => _HomeDrawerState();
+}
+
+class _HomeDrawerState extends State<HomeDrawer> {
+  final nameVN = ValueNotifier<String>('');
+  final _nameFN = FocusNode();
+
+  void _removeTasksAndLogout(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext ctx) {
+        return AlertDialog(
+          title: const Text(
+            'Deseja sair',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          content: const Text(
+            'Deseja sair do Todo List e remover todas as suas tarefas registradas?',
+            style: TextStyle(
+              fontSize: 16,
+              height: 1.2,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await context.read<HomeController>().removeAllTasks();
+
+                if (!mounted) return;
+                // Deslogando usuário.
+                context.read<AuthProvider>().logout();
+
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'SIM',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'NÃO',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +125,8 @@ class HomeDrawer extends StatelessWidget {
               showDialog(
                   context: context,
                   builder: (_) {
+                    _nameFN.requestFocus();
+
                     return AlertDialog(
                       title: const Text(
                         'Alterar Nome',
@@ -71,6 +136,7 @@ class HomeDrawer extends StatelessWidget {
                         ),
                       ),
                       content: TextField(
+                        focusNode: _nameFN,
                         textCapitalization: TextCapitalization.words,
                         decoration: const InputDecoration(
                           hintText: 'Informe o novo nome.',
@@ -128,7 +194,7 @@ class HomeDrawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            onTap: () => context.read<AuthProvider>().logout(),
+            onTap: () => _removeTasksAndLogout(context),
             title: Text(
               'Sair',
               style: TextStyle(

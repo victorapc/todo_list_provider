@@ -129,4 +129,12 @@ class HomeController extends DefaultChangeNotifier {
     hideLoading();
     refreshPage();
   }
+
+  Future<void> removeAllTasks() async {
+    showLoadingAndResetState();
+
+    await _tasksService.removeAllTasks();
+
+    hideLoading();
+  }
 }

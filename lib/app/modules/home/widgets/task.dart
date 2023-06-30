@@ -48,6 +48,7 @@ class _TaskState extends State<Task> {
                 'SIM',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
+                  fontSize: 20,
                 ),
               ),
             ),
@@ -58,7 +59,9 @@ class _TaskState extends State<Task> {
               child: const Text(
                 'NÃO',
                 style: TextStyle(
+                  color: Colors.red,
                   fontWeight: FontWeight.bold,
+                  fontSize: 20,
                 ),
               ),
             )
