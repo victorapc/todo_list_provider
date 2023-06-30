@@ -35,6 +35,7 @@ class HomeWeekFilter extends StatelessWidget {
                 return DatePicker(
                   value,
                   locale: 'pt_BR',
+                  height: 2,
                   initialSelectedDate: value,
                   selectionColor: context.primaryColor,
                   selectedTextColor: Colors.white,
